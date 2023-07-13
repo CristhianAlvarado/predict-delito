@@ -1,11 +1,16 @@
 #importar librerias
 import streamlit as st
+import folium
+from streamlit_folium import folium_static
 import pickle
 import pandas as pd
 
 #Extraer los archivos pickles
 with open('predict_delito.pkl', 'rb') as predict:
     predict_delito = pickle.load(predict)
+
+with open('predict_delito_rf.pkl', 'rb') as predict_rf:
+    predict_delito_rf = pickle.load(predict_rf)
 
 # with open('linear_reg.pkl', 'rb') as li:
 #     lin_reg = pickle.load(li)
@@ -20,9 +25,9 @@ with open('predict_delito.pkl', 'rb') as predict:
 def classify(num):
     print(num.item())
     if num.item() > 0.5:
-        return 'Hay un ' + str(round(num.item()*100, 2)) + '% de probabilidad de que ocurra un delito'
+        return 'Ocurre un delito'
     else:
-        return 'No ocurrió un delito'
+        return 'No ocurre un delito'
 
 def main():
     st.title('Modelamiento de hechos delictivos')
@@ -103,7 +108,7 @@ def main():
 
     if st.button('RUN'):
         if model == 'Logistic Regression':
-            st.success(classify(predict_delito.predict(df)))
+            st.success(classify(predict_delito_rf.predict(df)))
 
 if __name__ == '__main__':
     main()
